@@ -1,0 +1,104 @@
+/* Add some basic styling */
+.container {
+  margin-top: 20px;
+}
+
+.table {
+  margin-bottom: 0;
+}
+
+.table img {
+  border-radius: 5px;
+}
+
+.border {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.d-flex {
+  display: flex;
+  align-items: normal;
+}
+
+.justify-content-between {
+  justify-content: space-between;
+}
+
+.mt-3 {
+  margin-top: 1rem;
+}
+
+.mt-4 {
+  margin-top: 1.5rem;
+}
+
+.w-100 {
+  width: 100%;
+}
+.newClassAdd {
+  align-items: center;
+}
+/* styles.css */
+
+/* Default styles for large screens */
+.newClassAdd {
+  display: flex;
+  justify-content: space-between;
+}
+
+.border {
+  padding: 20px;
+}
+
+/* Styles for medium screens */
+@media (max-width: 768px) {
+  .newClassAdd {
+    display: block;
+    text-align: center;
+  }
+
+  .border {
+    padding: 15px;
+  }
+
+  .newClassAdd button {
+    margin: 5px 0;
+  }
+}
+
+/* styles.css */
+
+/* Default styles for large screens */
+.newClassAdd {
+  display: flex;
+  justify-content: space-between;
+}
+
+.border {
+  padding: 20px;
+}
+
+/* Hide table on small screens */
+@media (max-width: 576px) {
+  /* @media (min-width: 576px) { */
+  .table-responsive {
+    display: none;
+  }
+
+  .card-container {
+    display: block;
+  }
+
+  .card-container .card {
+    margin-bottom: 20px;
+  }
+}
+@media screen and (min-width: 577px) {
+  .card-container {
+    display: none;
+  }
+}
+.card-title.h5 {
+  margin-left: 5px;
+}

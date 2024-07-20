@@ -1,0 +1,33 @@
+/* Navbar.css */
+
+.navbar {
+  background-color: #343a40; /* Dark background */
+}
+
+.navbar-brand {
+  font-weight: bold;
+}
+
+.nav-link,
+.navbar-brand,
+.nav-dropdown .dropdown-item {
+  color: #ffffff !important; /* White text */
+}
+
+.nav-link:hover,
+.dropdown-item:hover {
+  color: #007bff !important; /* Primary blue on hover */
+}
+
+.navbar-nav .nav-link {
+  margin-right: 15px; /* Spacing between links */
+}
+
+.bi-cart {
+  font-size: 1.2rem;
+}
+.addcss {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+}

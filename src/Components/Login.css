@@ -1,0 +1,29 @@
+.MyForm {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  align-items: center;
+  margin-top: 40px;
+}
+.setForm {
+  width: 500px;
+  margin: auto;
+}
+@media screen and (max-width: 600px) {
+  .setForm {
+    width: 90%;
+  }
+}
+.btnSetup:hover {
+  color: #007bff;
+  background-color: #343a40;
+}
+.btnSetup {
+  background-color: #343a40;
+  margin-bottom: 20px;
+}
+.setTextInLogin {
+  color: #343a40;
+  font-weight: 500;
+  margin-left: 5px;
+}
