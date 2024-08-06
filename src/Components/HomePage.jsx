@@ -8,7 +8,7 @@ const HomePage = () => {
   const { foodProducts } = useContext(ProductContext);
   return (
     <>
-      <Container>
+      {/* <Container>
         <Row>
           {foodProducts.map((product, id) => (
             <Col sm={12} md={6} lg={4} xl={3} className="mb-4 mt-5" key={id}>
@@ -21,7 +21,7 @@ const HomePage = () => {
             </Col>
           ))}
         </Row>
-      </Container>
+      </Container> */}
     </>
   );
 };

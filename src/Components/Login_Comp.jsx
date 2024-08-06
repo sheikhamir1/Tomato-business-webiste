@@ -1,17 +1,41 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import VerifyOTP from "./VerifyOTP_Comp";
 import "./Login.css";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { ProductContext } from "./ProductContect";
 
 const Login_Comp = () => {
-  const { register, handleSubmit, reset } = useForm();
-  const onSubmit = (data) => {
-    console.log(data);
+  // const { LoginUser } = useContext(ProductContext);
 
-    // reset();
+  const { register, handleSubmit, reset } = useForm();
+
+  const onSubmit = async (data) => {
+    // console.log(data);
+
+    try {
+      const response = await fetch(`http://localhost:8080/authenticate`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("login result", result);
+      console.log(localStorage.getItem("token"));
+
+      // reset();
+    } catch (error) {
+      console.error("Error:", error.message);
+    }
   };
 
   return (
@@ -21,11 +45,11 @@ const Login_Comp = () => {
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Email address</Form.Label>
             <Form.Control
-              type="email"
+              type="text"
               placeholder="Enter email"
               required
-              name="email"
-              {...register("email")}
+              name="userName"
+              {...register("userName")}
             />
           </Form.Group>
 
@@ -35,19 +59,11 @@ const Login_Comp = () => {
               type="password"
               placeholder="Password"
               required
-              name="password"
-              {...register("password")}
+              name="userPassword"
+              {...register("userPassword")}
             />
           </Form.Group>
-          <Form.Group className="mb-3" controlId="formBasicCheckbox">
-            <Form.Check
-              type="checkbox"
-              label="Agree to terms and conditions"
-              required
-              name="checkbox"
-              {...register("checkbox")}
-            />
-          </Form.Group>
+
           <Button
             // variant="primary"
             type="submit"
