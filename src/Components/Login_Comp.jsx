@@ -30,7 +30,7 @@ const Login_Comp = () => {
 
       const result = await response.json();
       console.log("login result", result);
-      console.log(localStorage.getItem("token"));
+      localStorage.setItem("token", result.jwtToken);
 
       // reset();
     } catch (error) {

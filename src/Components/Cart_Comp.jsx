@@ -13,29 +13,26 @@ import "./CartComponents.css";
 import { ProductContext } from "./ProductContect";
 
 const Cart_Comp = () => {
-  const { CartItem, addToCart, removeFromCart, clearCart, foodProducts } =
+  const { CartItem, addToCart, removeFromCart, clearCart, getAllProducts } =
     useContext(ProductContext);
 
   // React Hook Form setup
   const { register, handleSubmit } = useForm();
 
   const subtotal = Object.keys(CartItem).reduce((acc, itemId) => {
-    const item = foodProducts.find(
+    const item = getAllProducts.find(
       (product) => product.id === parseInt(itemId)
     );
-    return acc + item.price * CartItem[itemId];
+    if (item) {
+      return acc + item.productPrice * CartItem[itemId];
+    }
+    return acc; // If item is not found, return the accumulator unchanged
   }, 0);
 
   // Example delivery fee calculation (you can replace it with your own logic)
   const deliveryFee = 5.0;
   // Total amount
-
   const total = subtotal + deliveryFee;
-
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   // Handle promo code submission
-  // };
 
   return (
     <>
@@ -49,21 +46,22 @@ const Cart_Comp = () => {
                     <th>Items</th>
                     <th>Title</th>
                     <th>Price</th>
+                    <th>Stock</th>
                     <th>Quantity</th>
                     <th>Total</th>
                     <th>Remove</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {foodProducts.map((item) => {
+                  {getAllProducts.map((item) => {
                     const quantity = CartItem[item.id] || 0;
                     if (quantity > 0) {
                       return (
                         <tr key={item.id}>
                           <td>
                             <img
-                              src={item.image}
-                              alt={item.name}
+                              src={item.imageUrl}
+                              alt={item.productName}
                               style={{
                                 width: "50px",
                                 height: "50px",
@@ -71,8 +69,9 @@ const Cart_Comp = () => {
                               }}
                             />
                           </td>
-                          <td>{item.name}</td>
-                          <td>${item.price.toFixed(2)}</td>
+                          <td>{item.productName}</td>
+                          <td>${item.productPrice}</td>
+                          <td>${item.productStock}</td>
                           <td>
                             <div className="d-flex newClassAdd">
                               <Button
@@ -92,7 +91,7 @@ const Cart_Comp = () => {
                               </Button>
                             </div>
                           </td>
-                          <td>${(item.price * quantity).toFixed(2)}</td>
+                          <td>${(item.productPrice * quantity).toFixed(2)}</td>
                           <td>
                             <Button
                               variant="danger"
@@ -111,7 +110,7 @@ const Cart_Comp = () => {
               </Table>
             </div>
             <div className="card-container hideClass">
-              {foodProducts.map((item) => {
+              {getAllProducts.map((item) => {
                 const quantity = CartItem[item.id] || 0;
                 if (quantity > 0) {
                   return (
@@ -119,8 +118,8 @@ const Cart_Comp = () => {
                       <Card.Body>
                         <div className="d-flex justify-content-between">
                           <img
-                            src={item.image}
-                            alt={item.name}
+                            src={item.imageUrl}
+                            alt={item.productName}
                             style={{
                               width: "50px",
                               height: "50px",
@@ -128,13 +127,13 @@ const Cart_Comp = () => {
                             }}
                           />
                           <div>
-                            <Card.Title>{item.name}</Card.Title>
-                            <Card.Text>
-                              Price: ${item.price.toFixed(2)}
-                            </Card.Text>
+                            <Card.Title>{item.productName}</Card.Title>
+                            <Card.Text>Price: ${item.productPrice}</Card.Text>
+                            <Card.Text>Stock: ${item.productStock}</Card.Text>
                             <Card.Text>Quantity: {quantity}</Card.Text>
                             <Card.Text>
-                              Total: ${(item.price * quantity).toFixed(2)}
+                              Total: $
+                              {(item.productPrice * quantity).toFixed(2)}
                             </Card.Text>
                           </div>
                         </div>

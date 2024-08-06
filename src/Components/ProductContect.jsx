@@ -6,24 +6,60 @@ const ProductContext = createContext();
 const ProductProvider = ({ children }) => {
   const [CartItem, setCartItem] = useState({});
 
+  const [getAllProducts, setGetAllProducts] = useState([]);
+
+  // const addToCart = (ItemId) => {
+  //   if (!CartItem[ItemId]) {
+  //     setCartItem((prev) => ({ ...prev, [ItemId]: 1 }));
+  //     console.log("this is working add to cart if block");
+  //   } else {
+  //     setCartItem((prev) => ({ ...prev, [ItemId]: prev[ItemId] + 1 }));
+  //     console.log("this is working add to cart else block");
+  //   }
+  // };
+
+  // const removeFromCart = (ItemId) => {
+  //   setCartItem((prev) => ({ ...prev, [ItemId]: prev[ItemId] - 1 }));
+  //   console.log("this is working remove from cart");
+  // };
+
+  // const clearCart = (ItemId) => {
+  //   setCartItem((prev) => ({ ...prev, [ItemId]: 0 }));
+  //   console.log("this is working clear cart");
+  // };
+
   const addToCart = (ItemId) => {
-    if (!CartItem[ItemId]) {
-      setCartItem((prev) => ({ ...prev, [ItemId]: 1 }));
-      console.log("this is working add to cart if block");
-    } else {
-      setCartItem((prev) => ({ ...prev, [ItemId]: prev[ItemId] + 1 }));
-      console.log("this is working add to cart else block");
-    }
+    const itemId = String(ItemId); // Convert ItemId to string
+    setCartItem((prev) => {
+      const newCart = { ...prev };
+      newCart[itemId] = (newCart[itemId] || 0) + 1;
+      console.log("Updated CartItem after add:", newCart);
+      return newCart;
+    });
   };
 
   const removeFromCart = (ItemId) => {
-    setCartItem((prev) => ({ ...prev, [ItemId]: prev[ItemId] - 1 }));
-    console.log("this is working remove from cart");
+    const itemId = String(ItemId); // Convert ItemId to string
+    setCartItem((prev) => {
+      const newCart = { ...prev };
+      if (newCart[itemId] > 1) {
+        newCart[itemId] -= 1;
+      } else {
+        delete newCart[itemId];
+      }
+      console.log("Updated CartItem after remove:", newCart);
+      return newCart;
+    });
   };
 
   const clearCart = (ItemId) => {
-    setCartItem((prev) => ({ ...prev, [ItemId]: 0 }));
-    console.log("this is working clear cart");
+    const itemId = String(ItemId); // Convert ItemId to string
+    setCartItem((prev) => {
+      const newCart = { ...prev };
+      delete newCart[itemId];
+      console.log("Updated CartItem after clear:", newCart);
+      return newCart;
+    });
   };
 
   useEffect(() => {
@@ -31,10 +67,7 @@ const ProductProvider = ({ children }) => {
   }, [CartItem]);
 
   const FetchProduct = async () => {
-    const jwtToken = localStorage.getItem("token");
-    console.log("Retrieved token:", jwtToken); // Debug: Check the token value
-
-    if (!jwtToken) {
+    if (!localStorage.getItem("token")) {
       console.error("No token found. Please log in.");
       return; // Exit if no token is found
     }
@@ -50,10 +83,8 @@ const ProductProvider = ({ children }) => {
           },
         }
       );
-      console.log("Retrieved token: again", localStorage.getItem("token")); // Debug: Check the token value
 
       if (!response.ok) {
-        // Log response status and text for more debugging info
         const errorText = await response.text();
         console.error(
           `HTTP error! status: ${response.status}, text: ${errorText}`
@@ -63,7 +94,10 @@ const ProductProvider = ({ children }) => {
 
       const data = await response.json();
       console.log("Fetched data:", data);
-      // setFoodProducts(data); // Uncomment and adjust as needed
+
+      // Set the products array from the response
+      setGetAllProducts(data.data);
+      console.log("setAllProducts", data.data);
     } catch (error) {
       console.error("Fetch error:", error);
     }
@@ -75,7 +109,7 @@ const ProductProvider = ({ children }) => {
 
   return (
     <ProductContext.Provider
-      value={{ CartItem, addToCart, removeFromCart, clearCart }}
+      value={{ CartItem, addToCart, removeFromCart, clearCart, getAllProducts }}
     >
       {children}
     </ProductContext.Provider>
