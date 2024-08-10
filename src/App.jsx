@@ -7,6 +7,7 @@ import HomePage from "./Components/HomePage.jsx";
 import Footer from "./Components/Footer.jsx";
 import Cart_Comp from "./Components/Cart_Comp.jsx";
 import Profile_Comp from "./Components/Profile_Comp.jsx";
+import ProductList from "./Components/ProductList_Compt.jsx";
 
 function App() {
   return (
@@ -20,12 +21,13 @@ function App() {
             <Route path="/profile" element={<Profile_Comp />} />
             <Route path="/signup" element={<Signup_Comp />} />
             <Route path="/cart" element={<Cart_Comp />} />
+            <Route path="/ProductList" element={<ProductList />} />
           </Routes>
           <Footer />
         </BrowserRouter>
 
         {/* 
-        order product in cart 
+        all done
         */}
       </>
     </>

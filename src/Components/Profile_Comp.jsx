@@ -6,13 +6,17 @@ import "./Profile.css";
 const Profile_Comp = () => {
   const { userDetails, setUserDetails } = useContext(ProductContext);
 
+  // Make sure to handle the case where userDetails might not be available
+  const username = localStorage.getItem("username");
+
   const [isLoading, setIsLoading] = useState(true);
   const { register, handleSubmit, setValue } = useForm();
 
-  const fetchUserDetails = async (userName) => {
+  // Fetch user details function
+  const fetchUserDetails = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/getUserDetails?userName=${userName}`,
+        `http://localhost:8080/getUserDetails?userName=${username}`,
         {
           method: "GET",
           headers: {
@@ -21,11 +25,18 @@ const Profile_Comp = () => {
           },
         }
       );
+
       if (!response.ok) {
         throw new Error("Failed to fetch user details");
       }
-      const data = await response.json();
-      // console.log("Fetched user details:", data);
+
+      const text = await response.text();
+      const data = text ? JSON.parse(text) : null;
+
+      if (!data) {
+        throw new Error("Empty response from server");
+      }
+
       setUserDetails(data);
       setValue("userFirstName", data.userFirstName);
       setValue("userLastName", data.userLastName);
@@ -37,11 +48,11 @@ const Profile_Comp = () => {
     }
   };
 
+  // Update user details function
   const onSubmit = async (data) => {
     try {
-      const userName = userDetails.userName;
       const response = await fetch(
-        `http://localhost:8080/updateUserDetails?userName=${userName}`,
+        `http://localhost:8080/updateUserDetails?userName=${username}`,
         {
           method: "PUT",
           headers: {
@@ -60,7 +71,7 @@ const Profile_Comp = () => {
         const updatedData = await response.json();
         setUserDetails(updatedData);
         alert("User details updated successfully!");
-        window.location.reload();
+        window.location.reload(); // Optionally, you can remove this if you want to avoid a full reload
       } else {
         alert("Failed to update user details.");
       }
@@ -70,15 +81,18 @@ const Profile_Comp = () => {
     }
   };
 
+  // Fetch user details when the component mounts
   useEffect(() => {
-    const userName = "finaltest"; // You should get this dynamically based on the logged-in user
-    fetchUserDetails(userName);
-  }, [setValue]);
+    if (username) {
+      fetchUserDetails();
+    } else {
+      setIsLoading(false); // If no username, stop loading
+    }
+  }, [username, setValue]);
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
-
   return (
     <div className="profile-container">
       <div className="profile-wrapper">

@@ -8,15 +8,13 @@ import { useForm } from "react-hook-form";
 import { ProductContext } from "./ProductContect";
 
 const Login_Comp = () => {
-  const { setUserDetails } = useContext(ProductContext);
+  const { setUserDetails, setFetchProfile } = useContext(ProductContext);
 
   const { register, handleSubmit, reset } = useForm();
 
   const onSubmit = async (data) => {
-    setUserDetails(data);
-    // console.log("userDetails", userDetails);
-
-    // console.log(data);
+    // Log the user details for debugging
+    console.log("User data submitted:", data);
 
     try {
       const response = await fetch(`http://localhost:8080/authenticate`, {
@@ -32,9 +30,19 @@ const Login_Comp = () => {
       }
 
       const result = await response.json();
-      console.log("login result", result);
+      console.log("Login result:", result);
+
+      // Store token and username in localStorage
       localStorage.setItem("token", result.jwtToken);
+      localStorage.setItem("username", data.userName); // Storing username
+
+      // Optional: Update context or state
+      setUserDetails(data);
+
+      // Optionally navigate to profile page
       window.location.replace("/profile");
+
+      // Reset form after successful login
       reset();
     } catch (error) {
       console.error("Error:", error.message);

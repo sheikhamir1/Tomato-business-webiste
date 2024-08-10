@@ -10,10 +10,8 @@ const Cart_Comp = () => {
     removeFromCart,
     clearCart,
     getAllProducts,
-    userDetails,
     clearAllCart,
   } = useContext(ProductContext);
-  // console.log("userDetails", userDetails);
 
   // Calculate subtotal and total
   const subtotal = Object.keys(CartItem).reduce((acc, itemId) => {
@@ -28,8 +26,8 @@ const Cart_Comp = () => {
 
   const total = subtotal;
 
-  // Dynamically fetched userId from userDetails context
-  const userId = userDetails?.userName || "";
+  const userId = localStorage.getItem("username");
+  // console.log("userId", userId);
 
   const handleCheckout = async () => {
     const orderItems = Object.keys(CartItem).map((itemId) => ({
@@ -61,7 +59,7 @@ const Cart_Comp = () => {
         clearAllCart(); // Clear the cart after successful order placement
       } else {
         console.error("Failed to place order:", response.statusText);
-        alert("Failed , please visit your profile then try again.");
+        alert("Failed , please login to place order.");
       }
     } catch (error) {
       console.error("Error placing order:", error);
