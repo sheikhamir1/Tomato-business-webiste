@@ -55,33 +55,50 @@ function EcommerceNavbar() {
           <Button variant="outline-success">Search</Button>
         </Form>
         <Nav style={{ alignItems: "baseline" }}>
-          <NavDropdown
-            title={
-              <>
-                <CgProfile
-                  style={{
-                    fontSize: "20px",
-                    color: "white",
-                  }}
-                />
-              </>
-            }
-            id="collapsible-nav-dropdown"
-          >
-            <NavDropdown.Item as={Link} to="/profile">
-              View Profile
-            </NavDropdown.Item>
-            <NavDropdown.Item as={Link} to="/settings">
-              Settings
-            </NavDropdown.Item>
-            <NavDropdown.Divider />
-            <NavDropdown.Item as={Link} to="/logout">
-              Logout
-            </NavDropdown.Item>
-          </NavDropdown>
-          <Nav.Link as={Link} to="/login_comp">
-            Login
-          </Nav.Link>
+          {localStorage.getItem("token") ? (
+            <NavDropdown
+              title={
+                <>
+                  <CgProfile
+                    style={{
+                      fontSize: "20px",
+                      color: "white",
+                    }}
+                  />
+                </>
+              }
+              id="collapsible-nav-dropdown"
+            >
+              <NavDropdown.Item as={Link} to="/profile">
+                View Profile
+              </NavDropdown.Item>
+              {/* <NavDropdown.Item as={Link} to="/settings">
+                Settings
+              </NavDropdown.Item>
+              <NavDropdown.Divider />
+              <NavDropdown.Item as={Link} to="/logout">
+                Logout
+              </NavDropdown.Item> */}
+            </NavDropdown>
+          ) : null}
+
+          {localStorage.getItem("token") ? (
+            <Nav.Link
+              as={Link}
+              to="/"
+              onClick={() => {
+                localStorage.removeItem("token");
+                window.location.replace("/");
+              }}
+            >
+              logout
+            </Nav.Link>
+          ) : (
+            <Nav.Link as={Link} to="/login_comp">
+              Login
+            </Nav.Link>
+          )}
+
           <Nav.Link as={Link} to="/cart">
             <div className="addcss">
               <i className="bi bi-cart"></i> <span>Cart</span>

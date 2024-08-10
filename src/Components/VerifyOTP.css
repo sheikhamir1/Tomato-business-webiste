@@ -30,3 +30,9 @@
 .btnSetup {
   background-color: #343a40;
 }
+.h2Setup {
+  color: #343a40 !important;
+}
+.otp-container.d-flex.justify-content-center.align-items-center.vh-100 {
+  flex-direction: column;
+}

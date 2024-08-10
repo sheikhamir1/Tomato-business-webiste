@@ -7,33 +7,15 @@ const ProductProvider = ({ children }) => {
   const [CartItem, setCartItem] = useState({});
 
   const [getAllProducts, setGetAllProducts] = useState([]);
-
-  // const addToCart = (ItemId) => {
-  //   if (!CartItem[ItemId]) {
-  //     setCartItem((prev) => ({ ...prev, [ItemId]: 1 }));
-  //     console.log("this is working add to cart if block");
-  //   } else {
-  //     setCartItem((prev) => ({ ...prev, [ItemId]: prev[ItemId] + 1 }));
-  //     console.log("this is working add to cart else block");
-  //   }
-  // };
-
-  // const removeFromCart = (ItemId) => {
-  //   setCartItem((prev) => ({ ...prev, [ItemId]: prev[ItemId] - 1 }));
-  //   console.log("this is working remove from cart");
-  // };
-
-  // const clearCart = (ItemId) => {
-  //   setCartItem((prev) => ({ ...prev, [ItemId]: 0 }));
-  //   console.log("this is working clear cart");
-  // };
+  const [userDetails, setUserDetails] = useState({});
+  // console.log("userDetails", userDetails);
 
   const addToCart = (ItemId) => {
     const itemId = String(ItemId); // Convert ItemId to string
     setCartItem((prev) => {
       const newCart = { ...prev };
       newCart[itemId] = (newCart[itemId] || 0) + 1;
-      console.log("Updated CartItem after add:", newCart);
+      // console.log("Updated CartItem after add:", newCart);
       return newCart;
     });
   };
@@ -47,7 +29,7 @@ const ProductProvider = ({ children }) => {
       } else {
         delete newCart[itemId];
       }
-      console.log("Updated CartItem after remove:", newCart);
+      // console.log("Updated CartItem after remove:", newCart);
       return newCart;
     });
   };
@@ -57,7 +39,7 @@ const ProductProvider = ({ children }) => {
     setCartItem((prev) => {
       const newCart = { ...prev };
       delete newCart[itemId];
-      console.log("Updated CartItem after clear:", newCart);
+      // console.log("Updated CartItem after clear:", newCart);
       return newCart;
     });
   };
@@ -66,19 +48,19 @@ const ProductProvider = ({ children }) => {
     // console.log("cartitem", CartItem);
   }, [CartItem]);
 
-  const FetchProduct = async () => {
-    if (!localStorage.getItem("token")) {
-      console.error("No token found. Please log in.");
-      return; // Exit if no token is found
-    }
+  const clearAllCart = () => {
+    setCartItem({});
+  };
 
+  const FetchProduct = async () => {
     try {
       const response = await fetch(
         `http://localhost:8080/api/product/getAllProduct`,
         {
           method: "GET",
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            // Authorization: `Bearer ${localStorage.getItem("token")}`,
+            // Authorization: `Bearer ${jwtToken}`,
             "Content-Type": "application/json",
           },
         }
@@ -93,7 +75,7 @@ const ProductProvider = ({ children }) => {
       }
 
       const data = await response.json();
-      console.log("Fetched data:", data);
+      // console.log("Fetched data:", data);
 
       // Set the products array from the response
       setGetAllProducts(data.data);
@@ -107,9 +89,47 @@ const ProductProvider = ({ children }) => {
     FetchProduct();
   }, []);
 
+  const productCategory = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/productCategory/getAllProductCategory`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        // Handle HTTP errors
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json(); // Parse the JSON data from the response
+      console.log("response", data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  useEffect(() => {
+    // productCategory();
+  }, []);
+
   return (
     <ProductContext.Provider
-      value={{ CartItem, addToCart, removeFromCart, clearCart, getAllProducts }}
+      value={{
+        CartItem,
+        addToCart,
+        removeFromCart,
+        clearCart,
+        getAllProducts,
+        userDetails,
+        setUserDetails,
+        clearAllCart,
+      }}
     >
       {children}
     </ProductContext.Provider>

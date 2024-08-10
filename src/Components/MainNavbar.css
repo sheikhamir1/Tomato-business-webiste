@@ -31,3 +31,13 @@
   align-items: baseline;
   gap: 5px;
 }
+button.btn.btn-outline-success {
+  --bs-btn-border-color: #ffffff;
+  color: white;
+}
+button.btn.btn-outline-success:hover {
+  --bs-btn-border-color: #ffffff;
+  --bs-btn-hover-border-color: #ffffff;
+  color: #007bff;
+  background-color: rgba(var(--bs-dark-rgb), var(--bs-bg-opacity)) !important;
+}

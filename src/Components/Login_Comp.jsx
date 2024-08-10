@@ -8,11 +8,14 @@ import { useForm } from "react-hook-form";
 import { ProductContext } from "./ProductContect";
 
 const Login_Comp = () => {
-  // const { LoginUser } = useContext(ProductContext);
+  const { setUserDetails } = useContext(ProductContext);
 
   const { register, handleSubmit, reset } = useForm();
 
   const onSubmit = async (data) => {
+    setUserDetails(data);
+    // console.log("userDetails", userDetails);
+
     // console.log(data);
 
     try {
@@ -31,8 +34,8 @@ const Login_Comp = () => {
       const result = await response.json();
       console.log("login result", result);
       localStorage.setItem("token", result.jwtToken);
-
-      // reset();
+      window.location.replace("/profile");
+      reset();
     } catch (error) {
       console.error("Error:", error.message);
     }
@@ -43,10 +46,10 @@ const Login_Comp = () => {
       <div className="MyForm">
         <Form className="setForm" onSubmit={handleSubmit(onSubmit)}>
           <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Label>Email address</Form.Label>
+            <Form.Label>username</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Enter email"
+              placeholder="Enter userName"
               required
               name="userName"
               {...register("userName")}

@@ -1,24 +1,21 @@
-import React, { useState, useContext } from "react";
-import {
-  Container,
-  Row,
-  Col,
-  Table,
-  Button,
-  Form,
-  Card,
-} from "react-bootstrap";
-import { useForm } from "react-hook-form";
+import React, { useContext } from "react";
+import { Container, Row, Col, Table, Button, Card } from "react-bootstrap";
 import "./CartComponents.css";
 import { ProductContext } from "./ProductContect";
 
 const Cart_Comp = () => {
-  const { CartItem, addToCart, removeFromCart, clearCart, getAllProducts } =
-    useContext(ProductContext);
+  const {
+    CartItem,
+    addToCart,
+    removeFromCart,
+    clearCart,
+    getAllProducts,
+    userDetails,
+    clearAllCart,
+  } = useContext(ProductContext);
+  // console.log("userDetails", userDetails);
 
-  // React Hook Form setup
-  const { register, handleSubmit } = useForm();
-
+  // Calculate subtotal and total
   const subtotal = Object.keys(CartItem).reduce((acc, itemId) => {
     const item = getAllProducts.find(
       (product) => product.id === parseInt(itemId)
@@ -26,13 +23,51 @@ const Cart_Comp = () => {
     if (item) {
       return acc + item.productPrice * CartItem[itemId];
     }
-    return acc; // If item is not found, return the accumulator unchanged
+    return acc;
   }, 0);
 
-  // Example delivery fee calculation (you can replace it with your own logic)
-  const deliveryFee = 5.0;
-  // Total amount
-  const total = subtotal + deliveryFee;
+  const total = subtotal;
+
+  // Dynamically fetched userId from userDetails context
+  const userId = userDetails?.userName || "";
+
+  const handleCheckout = async () => {
+    const orderItems = Object.keys(CartItem).map((itemId) => ({
+      productId: itemId,
+      quantity: CartItem[itemId],
+    }));
+
+    const orderData = {
+      userId: userId,
+      orderItems: orderItems,
+    };
+    // console.log("Order data:", orderData);
+
+    try {
+      const response = await fetch("http://localhost:8080/api/orders/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(orderData),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        // console.log("Order placed successfully:", result);
+        alert("Order placed successfully!");
+        // window.location.reload();
+        clearAllCart(); // Clear the cart after successful order placement
+      } else {
+        console.error("Failed to place order:", response.statusText);
+        alert("Failed , please visit your profile then try again.");
+      }
+    } catch (error) {
+      console.error("Error placing order:", error);
+      alert("Error placing order.");
+    }
+  };
 
   return (
     <>
@@ -70,8 +105,8 @@ const Cart_Comp = () => {
                             />
                           </td>
                           <td>{item.productName}</td>
-                          <td>${item.productPrice}</td>
-                          <td>${item.productStock}</td>
+                          <td>₹{item.productPrice.toFixed(2)}</td>
+                          <td>{item.productStock}</td>
                           <td>
                             <div className="d-flex newClassAdd">
                               <Button
@@ -91,7 +126,7 @@ const Cart_Comp = () => {
                               </Button>
                             </div>
                           </td>
-                          <td>${(item.productPrice * quantity).toFixed(2)}</td>
+                          <td>₹{(item.productPrice * quantity).toFixed(2)}</td>
                           <td>
                             <Button
                               variant="danger"
@@ -104,7 +139,7 @@ const Cart_Comp = () => {
                         </tr>
                       );
                     }
-                    return null; // Only return rows for items that are in the cart
+                    return null;
                   })}
                 </tbody>
               </Table>
@@ -128,11 +163,13 @@ const Cart_Comp = () => {
                           />
                           <div>
                             <Card.Title>{item.productName}</Card.Title>
-                            <Card.Text>Price: ${item.productPrice}</Card.Text>
-                            <Card.Text>Stock: ${item.productStock}</Card.Text>
+                            <Card.Text>
+                              Price: ₹{item.productPrice.toFixed(2)}
+                            </Card.Text>
+                            <Card.Text>Stock: {item.productStock}</Card.Text>
                             <Card.Text>Quantity: {quantity}</Card.Text>
                             <Card.Text>
-                              Total: $
+                              Total: ₹
                               {(item.productPrice * quantity).toFixed(2)}
                             </Card.Text>
                           </div>
@@ -165,7 +202,7 @@ const Cart_Comp = () => {
                     </Card>
                   );
                 }
-                return null; // Only return cards for items that are in the cart
+                return null;
               })}
             </div>
           </Col>
@@ -174,33 +211,20 @@ const Cart_Comp = () => {
               <h5>Cart Totals</h5>
               <div className="d-flex justify-content-between">
                 <span>Subtotal</span>
-                <span>${subtotal.toFixed(2)}</span>
-              </div>
-              <div className="d-flex justify-content-between">
-                <span>Delivery Fee</span>
-                <span>${deliveryFee.toFixed(2)}</span>
+                <span>₹{subtotal.toFixed(2)}</span>
               </div>
               <div className="d-flex justify-content-between">
                 <strong>Total</strong>
-                <strong>${total.toFixed(2)}</strong>
+                <strong>₹{total.toFixed(2)}</strong>
               </div>
-              <Button variant="primary" className="mt-3 w-100">
+              <Button
+                variant="primary"
+                className="mt-3 w-100"
+                onClick={handleCheckout}
+              >
                 Proceed to Checkout
               </Button>
             </div>
-            <Form className="mt-4" onSubmit={handleSubmit}>
-              <Form.Group controlId="promoCode">
-                <Form.Label>Promo Code</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter promo code"
-                  name="promoCode"
-                />
-                <Button variant="dark" className="mt-2" type="submit">
-                  Submit
-                </Button>
-              </Form.Group>
-            </Form>
           </Col>
         </Row>
       </Container>
