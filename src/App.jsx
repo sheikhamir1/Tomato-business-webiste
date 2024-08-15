@@ -11,6 +11,14 @@ import ProductList from "./Components/ProductList_Compt.jsx";
 import MyOrders from "./Components/MyOrder_comp.jsx";
 import ProductsByCategory from "./Components/ProductsByCategory.jsx";
 
+// _____  _  __
+// / ____|| |/ /
+// | (___  | ' /
+//  \___ \ |  <
+//  ____) || . \
+// |_____/ |_|\_\
+
+// 👨‍💻 web site Created by Amir Sohail Sheikh
 function App() {
   return (
     <>

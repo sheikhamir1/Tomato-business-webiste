@@ -66,3 +66,11 @@ const FoodCard = ({ id, image, name, price, stock }) => {
 };
 
 export default FoodCard;
+// _____  _  __
+// / ____|| |/ /
+// | (___  | ' /
+//  \___ \ |  <
+//  ____) || . \
+// |_____/ |_|\_\
+
+// 👨‍💻 web site Created by Amir Sohail Sheikh
