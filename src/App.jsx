@@ -20,6 +20,32 @@ import ProductsByCategory from "./Components/ProductsByCategory.jsx";
 
 // 👨‍💻 web site Created by Amir Sohail Sheikh
 function App() {
+  useEffect(() => {
+    const clearLocalStorageAfterTimeout = () => {
+      const loginTime = localStorage.getItem("loginTime");
+
+      if (loginTime) {
+        const currentTime = Date.now();
+        const timeElapsed = currentTime - loginTime;
+
+        const thirtyMinutes = 30 * 60 * 1000;
+
+        if (timeElapsed > thirtyMinutes) {
+          localStorage.clear();
+          console.log("token expired after 30 minute");
+          alert("Session expired. Please login again.");
+        } else {
+          // Set a timeout to clear the storage after the remaining time
+          setTimeout(() => {
+            localStorage.clear();
+            console.log("token expired after 30 minute");
+          }, thirtyMinutes - timeElapsed);
+        }
+      }
+    };
+
+    clearLocalStorageAfterTimeout();
+  }, []);
   return (
     <>
       <>

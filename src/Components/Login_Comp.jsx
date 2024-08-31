@@ -33,8 +33,10 @@ const Login_Comp = () => {
       console.log("Login result:", result);
 
       // Store token and username in localStorage
-      localStorage.setItem("token", result.jwtToken);
+      // localStorage.setItem("token", result.jwtToken);
       localStorage.setItem("username", data.userName); // Storing username
+      localStorage.setItem("token", result.jwtToken);
+      localStorage.setItem("loginTime", Date.now());
 
       // Optional: Update context or state
       setUserDetails(data);
